@@ -49,9 +49,12 @@ El investigador crea un nuevo proyecto desde su dashboard
 - Proceso se cierra y genera reportes
 
 📂 Estructura de Directorios
+```text
 📁 app/
     📁 migrations/
+        📁 __pycache__/
         📄 0001_initial.py
+        📄 __init__.py
     📁 templates/
         📁 expertos/
             📄 base_expertos.html
@@ -70,22 +73,35 @@ El investigador crea un nuevo proyecto desde su dashboard
             📄 inicio.html
             📄 seleccion_expertos.html
     📁 templatetags/
+        📁 __pycache__/
+        📄 __init__.py
         📄 custom_tags.py
     📁 views/
+        📁 __pycache__/
         📁 api/
+            📁 __pycache__/
+            📄 __init__.py
         📁 expertos/
+            📁 __pycache__/
+            📄 __init__.py
             📄 chat.py
             📄 chat_moderador.py
             📄 dashboard.py
             📄 encuestas.py
             📄 votacion.py
         📁 investigadores/
+            📁 __pycache__/
+            📄 __init__.py
             📄 expertos_finales.py
             📄 expertos_totales.py
             📄 seleccion_expertos.py
             📄 vistas_principales.py
         📁 utils/
+            📁 __pycache__/
+            📄 __init__.py
             📄 calculos.py
+        📄 __init__.py
+    📄 __init__.py
     📄 admin.py
     📄 apps.py
     📄 forms.py
@@ -96,6 +112,8 @@ El investigador crea un nuevo proyecto desde su dashboard
     📄 tests.py
     📄 urls.py
 📁 project/
+    📁 __pycache__/
+    📄 __init__.py
     📄 asgi.py
     📄 settings.py
     📄 urls.py
@@ -148,6 +166,7 @@ El investigador crea un nuevo proyecto desde su dashboard
 📄 manage.py
 📄 migrations.py
 📄 README.md
+```
 
 # 🔌 API Endpoints
 
