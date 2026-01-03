@@ -1,0 +1,242 @@
+[
+{
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+        "password": "pbkdf2_sha256$600000$4HNc6M9X4VRZq7mR$0Xz5z+ZGhWFG0KfG5g6y8m3t9n1p2q3r4s5t6u7v8w9x0y1z2=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "juan.perez",
+        "first_name": "Juan Carlos",
+        "last_name": "Pérez Rodríguez",
+        "email": "juan.perez@empresa.com",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2024-01-15T08:00:00Z"
+    }
+},
+{
+    "model": "auth.user",
+    "pk": 2,
+    "fields": {
+        "password": "pbkdf2_sha256$600000$8LMn0P2q9RsT$1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p7q8r9s0t1u2v3w4x5y6z7=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "maria.gomez",
+        "first_name": "María Elena",
+        "last_name": "Gómez López",
+        "email": "maria.gomez@empresa.com",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2024-01-20T09:30:00Z"
+    }
+},
+{
+    "model": "auth.user",
+    "pk": 3,
+    "fields": {
+        "password": "pbkdf2_sha256$600000$9NPq1R3s0TwU$2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p7q8r9s0t1u2v3w4x5y6z7a8=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "carlos.lopez",
+        "first_name": "Carlos Andrés",
+        "last_name": "López Martínez",
+        "email": "carlos.lopez@empresa.com",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2024-02-01T10:15:00Z"
+    }
+},
+{
+    "model": "auth.user",
+    "pk": 4,
+    "fields": {
+        "password": "pbkdf2_sha256$600000$aORs2T4u1VxV$3c4d5e6f7g8h9i0j1k2l3m4n5o6p7q8r9s0t1u2v3w4x5y6z7a8b9=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "ana.torres",
+        "first_name": "Ana Isabel",
+        "last_name": "Torres Ramírez",
+        "email": "ana.torres@empresa.com",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2024-02-10T11:45:00Z"
+    }
+},
+{
+    "model": "auth.user",
+    "pk": 5,
+    "fields": {
+        "password": "pbkdf2_sha256$600000$bPSt3U5v2WyW$4d5e6f7g8h9i0j1k2l3m4n5o6p7q8r9s0t1u2v3w4x5y6z7a8b9c0=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "pedro.molina",
+        "first_name": "Pedro Antonio",
+        "last_name": "Molina Sánchez",
+        "email": "pedro.molina@empresa.com",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2024-02-15T14:20:00Z"
+    }
+},
+{
+    "model": "auth.user",
+    "pk": 6,
+    "fields": {
+        "password": "pbkdf2_sha256$600000$cQTu4V6w3XzX$5e6f7g8h9i0j1k2l3m4n5o6p7q8r9s0t1u2v3w4x5y6z7a8b9c0d1=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "laura.diaz",
+        "first_name": "Laura Patricia",
+        "last_name": "Díaz Herrera",
+        "email": "laura.diaz@empresa.com",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2024-03-01T16:30:00Z"
+    }
+},
+{
+    "model": "auth.user",
+    "pk": 7,
+    "fields": {
+        "password": "pbkdf2_sha256$600000$dRUw5W7x4YAY$6f7g8h9i0j1k2l3m4n5o6p7q8r9s0t1u2v3w4x5y6z7a8b9c0d1e2=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "jorge.rivera",
+        "first_name": "Jorge Luis",
+        "last_name": "Rivera Castillo",
+        "email": "jorge.rivera@empresa.com",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2024-03-10T08:00:00Z"
+    }
+},
+{
+    "model": "app.experto",
+    "pk": 1,
+    "fields": {
+        "usuario": 1,
+        "coeficiente_experticidad": "95.50",
+        "indice_experticidad": "0.95",
+        "cargo_actual": "Director de Investigación y Desarrollo",
+		"categoria": "Industrial",
+        "departamento": "Dirección Científica",
+        "grado_cientifico": "Doctor",
+        "anos_experiencia": 25
+    }
+},
+{
+    "model": "app.experto",
+    "pk": 2,
+    "fields": {
+        "usuario": 2,
+        "coeficiente_experticidad": "88.30",
+        "indice_experticidad": "0.88",
+        "cargo_actual": "Ingeniera Senior de Proyectos",
+		"categoria": "Industrial",
+        "departamento": "Ingeniería Biomédica",
+        "grado_cientifico": "Master",
+        "anos_experiencia": 18
+    }
+},
+{
+    "model": "app.experto",
+    "pk": 3,
+    "fields": {
+        "usuario": 3,
+        "coeficiente_experticidad": "82.75",
+        "indice_experticidad": "0.83",
+        "cargo_actual": "Jefe de Departamento de Calidad",
+		"categoria": "Industrial",
+        "departamento": "Control de Calidad",
+        "grado_cientifico": "Licenciado",
+        "anos_experiencia": 15
+    }
+},
+{
+    "model": "app.experto",
+    "pk": 4,
+    "fields": {
+        "usuario": 4,
+        "coeficiente_experticidad": "91.20",
+        "indice_experticidad": "0.91",
+        "cargo_actual": "Investigadora Principal",
+		"categoria": "Industrial",
+        "departamento": "Nanotecnología",
+        "grado_cientifico": "Doctor",
+        "anos_experiencia": 22
+    }
+},
+{
+    "model": "app.experto",
+    "pk": 5,
+    "fields": {
+        "usuario": 5,
+        "coeficiente_experticidad": "75.40",
+        "indice_experticidad": "0.75",
+        "cargo_actual": "Técnico Especialista",
+		"categoria": "Mecanica",
+        "departamento": "Laboratorio de Pruebas",
+        "grado_cientifico": "Técnico",
+        "anos_experiencia": 12
+    }
+},
+{
+    "model": "app.experto",
+    "pk": 6,
+    "fields": {
+        "usuario": 6,
+        "coeficiente_experticidad": "87.60",
+        "indice_experticidad": "0.88",
+        "cargo_actual": "Coordinadora de I+D",
+		"categoria": "Mecanica",
+        "departamento": "Innovación",
+        "grado_cientifico": "Master",
+        "anos_experiencia": 16
+    }
+},
+{
+    "model": "app.experto",
+    "pk": 7,
+    "fields": {
+        "usuario": 7,
+        "coeficiente_experticidad": "78.90",
+        "indice_experticidad": "0.79",
+        "cargo_actual": "Analista Senior de Datos",
+		"categoria": "Mecanica",
+        "departamento": "Inteligencia de Negocios",
+        "grado_cientifico": "Licenciado",
+        "anos_experiencia": 14
+    }
+},
+{
+    "model": "app.proyecto",
+    "pk": 1,
+    "fields": {
+        "nombre": "Desarrollo de Nanosensores para Diagnóstico Temprano de Cáncer",
+        "investigador": 1,
+        "empresa_cliente": "BiomedTech Solutions S.A.",
+		"categoria": "Industrial"
+    }
+},
+{
+    "model": "app.proyecto",
+    "pk": 2,
+    "fields": {
+        "nombre": "Optimización de Algoritmos de Machine Learning para Calidad de Procesos",
+        "investigador": 1,
+        "empresa_cliente": "Manufacturing AI Corp",
+		"categoria": "Industrial"
+    }
+},
+{
+    "model": "app.proyecto",
+    "pk": 3,
+    "fields": {
+        "nombre": "Validación de Protocolos de Bioseguridad en Laboratorios Clínicos",
+        "investigador": 1,
+        "empresa_cliente": "HealthSafe Laboratories",
+		"categoria": "Mecanica"
+    }
+}
+]

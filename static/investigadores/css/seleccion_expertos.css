@@ -1,0 +1,115 @@
+.table-encuesta th {
+    background-color: #2c3e50;
+    color: white;
+    font-weight: 600;
+    border: none;
+}
+
+.table-encuesta td {
+    vertical-align: middle;
+}
+
+.estado-pendiente {
+    color: #dc3545;
+    font-weight: 500;
+}
+
+.estado-completado {
+    color: #198754;
+    font-weight: 500;
+}
+
+.badge-coeficiente {
+    font-size: 0.9em;
+    padding: 0.4em 0.6em;
+}
+
+.moderador-radio {
+    transform: scale(1.2);
+}
+
+.btn-modificar {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    color: white;
+}
+
+.btn-modificar:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+}
+
+.btn-aceptar {
+    background-color: #198754;
+    border-color: #198754;
+    color: white;
+}
+
+.btn-aceptar:hover {
+    background-color: #157347;
+    border-color: #146c43;
+}
+
+.encuesta-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.estado-encuesta {
+    display: inline-block;
+    padding: 0.25em 0.6em;
+    border-radius: 1em;
+    font-size: 0.875em;
+    font-weight: 500;
+}
+
+.estado-pendiente-badge {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+
+.estado-completado-badge {
+    background-color: #d1edff;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+
+.progress-container {
+    background-color: #e9ecef;
+    border-radius: 0.5rem;
+    padding: 1rem;
+}
+
+.progress-text {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+@media (max-width: 768px) {
+    .table-responsive {
+        font-size: 0.875rem;
+    }
+    
+    .btn-group-sm > .btn {
+        padding: 0.2rem 0.4rem;
+        font-size: 0.8rem;
+    }
+    
+    .encuesta-header h2 {
+        font-size: 1.5rem;
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.status-update {
+    transition: all 0.3s ease;
+}

@@ -1,0 +1,137 @@
+{% extends "investigadores/base_investigadores.html" %}
+{% load static %}
+
+{% block title %}Expertos Finales - {{ proyecto.nombre }}{% endblock %}
+
+{% block extra_css %}
+<link href="{% static 'investigadores/css/expertos_finales.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10 col-xl-8">
+            <div class="card lista-chequeo-card mb-4">
+                <div class="card-header lista-chequeo-header text-white text-center">
+                    <h2 class="mb-1"><i class="fas fa-clipboard-list me-2"></i>Expertos Finales</h2>
+                    <p class="mb-0">Lista definitiva de expertos seleccionados para el proyecto</p>
+                </div>
+            </div>
+
+            <div id="mensajesContainer" class="mb-4"></div>
+
+            <div class="card lista-chequeo-card mb-4">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h5 class="card-title">Proyecto: {{ proyecto.nombre }}</h5>
+                            <p class="card-text text-muted">
+                                <strong>Responsable:</strong> {{ proyecto.nombre_responsable|default:"Responsable no asignado" }}
+                            </p>
+                        </div>
+                        <div class="col-md-4 text-md-end">
+                            <div class="d-flex align-items-center justify-content-md-end mb-2">
+                                <span class="contador-expertos me-3">Total: <strong id="contadorExpertos">{{ expertos_finales|length }}</strong> expertos</span>
+                            </div>
+							{% if proceso_finalizado %}
+								<span class="badge bg-success">
+									<i class="fas fa-check-circle me-1"></i>Proceso Completado
+								</span>
+							{% else %}
+								<span class="badge bg-warning">
+									<i class="fas fa-clock me-1"></i>Proceso en Curso
+								</span>
+							{% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card lista-chequeo-card mb-4">
+                <div class="card-header bg-light">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Equipo de Expertos Final</h5>
+                        <span class="badge bg-primary">
+                            <i class="fas fa-user-friends me-1"></i>Lista Definitiva
+                        </span>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        <tbody>
+							{% for item in expertos_finales %}
+							<tr {% if moderador and item.experto.id == moderador.id %}class="table-warning"{% endif %}>
+								<td>
+									<div class="d-flex align-items-center">
+										<strong>{{ item.experto.usuario.get_full_name }}</strong>
+										{% if moderador and item.experto.id == moderador.id %}
+										<span class="badge bg-warning text-dark ms-2">
+											<i class="fas fa-crown me-1"></i>Moderador
+										</span>
+										{% endif %}
+									</div>
+								</td>
+								<td>
+									<span class="badge {% if item.coeficiente_experticidad_en_decision and item.coeficiente_experticidad_en_decision >= 80 %}bg-success{% else %}bg-secondary{% endif %}">
+										{{ item.coeficiente_experticidad_en_decision|default:"N/A" }}
+									</span>
+								</td>
+								<td>{{ item.experto.cargo_actual|default:"No especificado" }}</td>
+								<td>
+									<span class="badge bg-dark">{{ item.experto.anos_experiencia|default:"N/A" }} años</span>
+								</td>
+								<td>
+									<span class="badge bg-info">{{ item.experto.get_grado_cientifico_display }}</span>
+								</td>
+								<td>
+									{% if moderador and item.experto.id == moderador.id %}
+									<i class="fas fa-crown text-warning" title="Moderador del proyecto"></i>
+									{% else %}
+									<i class="fas fa-user text-muted" title="Experto"></i>
+									{% endif %}
+								</td>
+								<td>{{ item.fecha_decision|date:"d/m/Y H:i" }}</td>
+							</tr>
+							{% empty %}
+							<tr>
+								<td colspan="7" class="text-center py-4">
+									<i class="fas fa-users fa-2x text-muted mb-2"></i>
+									<p class="text-muted">No hay expertos seleccionados aún</p>
+									<a href="{% url 'app:seleccion_expertos' proyecto.id %}" class="btn btn-primary">
+										<i class="fas fa-poll me-1"></i> Ir a Encuestas
+									</a>
+								</td>
+							</tr>
+							{% endfor %}
+						</tbody>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card lista-chequeo-card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-2 mb-md-0">
+                            <a href="{% url 'app:seleccion_expertos' proyecto.id %}" class="btn btn-outline-primary w-100" id="btnRegresarEncuesta">
+                                <i class="fas fa-arrow-left me-2"></i>Regresar a Selección
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="{% url 'app:expertos_totales' proyecto.id %}" class="btn btn-success w-100" id="btnVolverInicio">
+                                <i class="fas fa-home me-2"></i>Volver a Expertos
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Pasar proyecto_id al JS global
+    window.PROYECTO_ID = '{{ proyecto.id }}';
+</script>
+<script src="{% static 'investigadores/js/expertos_finales.js' %}"></script>
+{% endblock %}

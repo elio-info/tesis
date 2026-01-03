@@ -1,0 +1,198 @@
+{% extends "expertos/base_expertos.html" %}
+{% load static %}
+
+{% block title %}Votar Items - {{ proyecto.nombre }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+	{% csrf_token %}
+	
+    <!-- Encabezado -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4 class="mb-0">
+                            <i class="fas fa-vote-yea me-2"></i>
+                            Votación de Items
+                        </h4>
+                        <small class="opacity-75">{{ proyecto.nombre }}</small>
+                    </div>
+                    <div class="text-end">
+                        <span class="badge bg-light text-dark">
+                            {{ votados_por_experto }}/{{ total_items }} votados
+                        </span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="text-center p-3 bg-light rounded">
+                                <h2 class="text-primary mb-0">{{ pendientes }}</h2>
+                                <small class="text-muted">Pendientes</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center p-3 bg-light rounded">
+                                <h2 class="text-success mb-0">{{ votados_por_experto }}</h2>
+                                <small class="text-muted">Completados</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6 d-flex align-items-center justify-content-end">
+                            <a href="{% url 'app:dashboard_experto' experto.id %}" 
+                               class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-1"></i>Volver al Dashboard
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Items por votar -->
+    {% if items_por_votar %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0">
+                        <i class="fas fa-clock me-2"></i>
+                        Items Pendientes de Votar ({{ items_por_votar|length }})
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th width="5%">#</th>
+                                    <th width="45%">Título del Item</th>
+                                    <th width="20%" class="text-center">¿De Acuerdo?</th>
+                                    <th width="20%">Evaluación</th>
+                                    <th width="10%" class="text-center">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in items_por_votar %}
+                                <tr data-item-id="{{ item.id }}">
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ item.titulo }}</td>
+                                    <td class="text-center">
+                                        <div class="form-check form-switch d-flex justify-content-center">
+                                            <input class="form-check-input" 
+                                                   type="checkbox" 
+                                                   id="acuerdo-{{ item.id }}"
+                                                   data-item-id="{{ item.id }}">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <select class="form-select form-select-sm evaluacion-select" 
+                                                data-item-id="{{ item.id }}">
+                                            <option value="">-- Seleccionar --</option>
+                                            <option value="1">1 - Muy Bajo</option>
+                                            <option value="2">2 - Bajo</option>
+                                            <option value="3">3 - Medio</option>
+                                            <option value="4">4 - Alto</option>
+                                            <option value="5">5 - Muy Alto</option>
+                                        </select>
+                                    </td>
+                                    <td class="text-center">
+                                        <button class="btn btn-sm btn-success guardar-voto" 
+                                                data-item-id="{{ item.id }}"
+                                                disabled>
+                                            <i class="fas fa-check"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Items votados -->
+    {% if items_votados %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-check-circle me-2"></i>
+                        Items Votados ({{ items_votados|length }})
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th width="5%">#</th>
+                                    <th width="45%">Título del Item</th>
+                                    <th width="20%" class="text-center">De Acuerdo</th>
+                                    <th width="20%">Tu Evaluación</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in items_votados %}
+                                <tr data-item-id="{{ item.id }}">
+									<td>{{ forloop.counter }}</td>
+									<td>{{ item.titulo }}</td>
+									<td class="text-center">
+										<div class="form-check form-switch d-flex justify-content-center">
+											<input class="form-check-input" 
+												   type="checkbox" 
+												   id="acuerdo-{{ item.id }}"
+												   data-item-id="{{ item.id }}"
+												   disabled>
+										</div>
+									</td>
+									<td>
+										<select class="form-select form-select-sm evaluacion-select" 
+												data-item-id="{{ item.id }}" disabled>
+											<option value="1">1 - Muy Bajo</option>
+											<option value="2">2 - Bajo</option>
+											<option value="3">3 - Medio</option>
+											<option value="4">4 - Alto</option>
+											<option value="5">5 - Muy Alto</option>
+										</select>
+									</td>
+								</tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if not items_por_votar and not items_votados %}
+    <div class="row">
+        <div class="col-12">
+            <div class="text-center py-5">
+                <i class="fas fa-clipboard-check fa-3x text-success mb-3"></i>
+                <h5>¡Has completado todas las votaciones!</h5>
+                <p class="text-muted">No hay más items para votar en este proyecto.</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<div id="toastContainer" class="toast-container position-fixed top-0 end-0 p-3"></div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    window.EXPERTO_ID = '{{ experto.id }}';
+    window.PROYECTO_ID = '{{ proyecto.id }}';
+</script>
+<script src="{% static 'expertos/js/votacion.js' %}"></script>
+{% endblock %}

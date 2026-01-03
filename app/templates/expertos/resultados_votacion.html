@@ -1,0 +1,122 @@
+{% extends "expertos/base_expertos.html" %}
+{% load static %}
+
+{% block title %}Resultados Votación - {{ proyecto.nombre }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-bar me-2"></i>
+                        Resultados de Votación - {{ proyecto.nombre }}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div id="resultadosContainer">
+                        <div class="text-center py-5">
+                            <i class="fas fa-spinner fa-spin fa-2x"></i>
+                            <p class="mt-2">Cargando resultados...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    window.PROYECTO_ID = '{{ proyecto.id }}';
+    window.EXPERTO_ID = '{{ experto.id }}';
+    
+    document.addEventListener('DOMContentLoaded', async function() {
+        await cargarResultados();
+    });
+    
+    async function cargarResultados() {
+        try {
+            const response = await fetch(`/api/proyecto/${window.PROYECTO_ID}/resultados-votacion/?moderador_id=${window.EXPERTO_ID}`);
+            const data = await response.json();
+            
+            if (data.success) {
+                const container = document.getElementById('resultadosContainer');
+                
+                if (data.items.length === 0) {
+                    container.innerHTML = `
+                        <div class="text-center text-muted py-5">
+                            <i class="fas fa-inbox fa-3x mb-3"></i>
+                            <p>Aún no se han registrado votos</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                let html = `
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th width="5%">#</th>
+                                    <th width="40%">Item</th>
+                                    <th width="15%" class="text-center">Votos</th>
+                                    <th width="15%" class="text-center">Evaluación Promedio</th>
+                                    <th width="15%" class="text-center">Votos Positivos</th>
+                                    <th width="10%" class="text-center">% Aceptación</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+                
+                data.items.forEach((item, index) => {
+                    const claseAceptado = item.porcentaje_aceptacion >= 70 ? 'table-success' : 
+                                        item.porcentaje_aceptacion >= 40 ? 'table-warning' : 'table-danger';
+                    
+                    html += `
+                        <tr class="${claseAceptado}">
+                            <td>${index + 1}</td>
+                            <td><strong>${item.titulo}</strong></td>
+                            <td class="text-center">${item.total_votos}</td>
+                            <td class="text-center">${item.avg_evaluacion}/10</td>
+                            <td class="text-center">${item.votos_positivos}</td>
+                            <td class="text-center">
+                                <span class="badge ${item.porcentaje_aceptacion >= 70 ? 'bg-success' : 
+                                                   item.porcentaje_aceptacion >= 40 ? 'bg-warning' : 'bg-danger'}">
+                                    ${item.porcentaje_aceptacion}%
+                                </span>
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                html += `
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mt-3 text-center">
+                        <p class="text-muted small">
+                            Total de votos registrados: <strong>${data.total_votos_cast}</strong>
+                        </p>
+                        <button class="btn btn-primary" onclick="window.print()">
+                            <i class="fas fa-print me-1"></i> Imprimir Resultados
+                        </button>
+                    </div>
+                `;
+                
+                container.innerHTML = html;
+            } else {
+                document.getElementById('resultadosContainer').innerHTML = 
+                    `<div class="alert alert-danger">${data.error}</div>`;
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            document.getElementById('resultadosContainer').innerHTML = 
+                '<div class="alert alert-danger">Error de conexión</div>';
+        }
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,208 @@
+{% extends "investigadores/base_investigadores.html" %}
+{% load static %}
+{% load custom_tags %}
+
+{% block title %}Expertos Totales - Investigadores{% endblock %}
+
+{% block extra_css %}
+<link href="{% static 'investigadores/css/expertos_totales.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+	<div style="display: none;">
+        {% csrf_token %}
+    </div>
+	
+	<input type="hidden" id="proceso-finalizado" value="{{ proceso_finalizado|yesno:'true,false' }}">
+	
+    <div class="card lista-chequeo-card mb-4">
+		<div class="card-body">
+			<div class="row">
+				<div class="col-md-8">
+					<h5 class="card-title">Proyecto: {{ proyecto.nombre }}</h5>
+					<p class="card-text text-muted">
+						<strong>Responsable:</strong> {{ proyecto.nombre_responsable|default:"Responsable no asignado" }}
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <div class="d-flex align-items-center">
+                <label class="me-2 mb-0"><strong>Ordenar por:</strong></label>
+                <select class="form-select form-select-sm" style="width: auto;" id="ordenSelect">
+                    <option value="nombre">Nombre</option>
+                    <option value="coeficiente">Coeficiente K</option>
+                    <option value="grado">Grado Científico</option>
+                    <option value="experiencia">Años de Experiencia</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="input-group input-group-sm">
+                <input type="text" class="form-control" placeholder="Buscar experto..." id="buscarInput">
+                <button class="btn btn-outline-secondary" type="button" id="btnBuscar">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Lista de Expertos Disponibles</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped mb-0" id="tablaExpertos">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Experto</th>
+                                    <th>K</th>
+                                    <th>Cargo</th>
+                                    <th>Grado</th>
+                                    <th>Años Exp.</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for experto in expertos %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ experto.usuario.get_full_name }}</strong>
+                                    </td>
+                                    <td>
+                                        <span class="badge {% if experto.indice_experticidad and experto.indice_experticidad >= 0.8 %}bg-success{% elif experto.indice_experticidad %}bg-warning{% else %}bg-secondary{% endif %}">
+                                            {{ experto.coeficiente_experticidad|default:"N/A" }}
+                                        </span>
+                                    </td>
+                                    <td>{{ experto.cargo_actual|default:"No especificado" }}</td>
+                                    <td>
+                                        <span class="badge bg-info">{{ experto.get_grado_cientifico_display }}</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-dark">{{ experto.anos_experiencia|default:"N/A" }}</span>
+                                    </td>
+                                    <td>
+										<div class="btn-group btn-group-sm">
+											{% with estado=experto.estado_encuesta %}
+												{% if proceso_finalizado %}
+													<button class="btn btn-secondary btn-sm" disabled title="Proceso finalizado">
+														<i class="fas fa-lock me-1"></i> Bloqueado
+													</button>
+												{% elif estado == 'completada' %}
+													<!-- Encuesta completada -->
+													<span class="badge bg-success">
+														<i class="fas fa-check-circle me-1"></i> Completada
+													</span>
+												{% elif estado == 'pendiente' %}
+													<!-- Encuesta enviada pero pendiente -->
+													<button class="btn btn-secondary btn-sm" disabled>
+														<i class="fas fa-paper-plane me-1"></i> Enviada
+													</button>
+												{% else %}
+													<!-- Sin encuesta -->
+													<button class="btn btn-outline-primary btn-sm btn-encuestar" 
+															data-experto-id="{{ experto.id }}"
+															data-proyecto-id="{{ proyecto.id }}">
+														<i class="fas fa-poll me-1"></i> Encuestar
+													</button>
+												{% endif %}
+											{% endwith %}
+											
+											<!-- Botón ver detalles siempre disponible -->
+											<button class="btn btn-outline-info btn-sm btn-ver-detalles" 
+													data-experto-id="{{ experto.id }}">
+												<i class="fas fa-eye"></i>
+											</button>
+										</div>
+									</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="6" class="text-center">No hay expertos registrados</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-end">
+            <div>
+                {% if proceso_finalizado %}
+                    <button class="btn btn-secondary me-2" disabled>
+                        <i class="fas fa-stop me-1"></i> Proceso Bloqueado
+                    </button>
+                    <a href="{% url 'app:lista_chequeo' proyecto.id %}" class="btn btn-primary">
+                        <i class="fas fa-list-check me-1"></i> Ver Lista Final
+                    </a>
+                {% else %}
+                    <button class="btn btn-danger me-2" id="btnDetener">
+                        <i class="fas fa-stop me-1"></i> Detener
+                    </button>
+                    <button class="btn btn-secondary me-2" id="btnCerrar">
+                        <i class="fas fa-times me-1"></i> Cerrar
+                    </button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+	
+	<div class="modal fade" id="modalConfirmarEncuesta" tabindex="-1">
+		<div class="modal-dialog modal-sm modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-body text-center py-4">
+					<i class="fas fa-question-circle fa-3x text-primary mb-3"></i>
+					<h6>¿Enviar encuesta a <span id="nombreExpertoEncuesta" class="fw-bold"></span>?</h6>
+				</div>
+				<div class="modal-footer justify-content-center border-0 pt-0">
+					<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">
+						Cancelar
+					</button>
+					<button type="button" class="btn btn-sm btn-primary" id="btnConfirmarEncuesta">
+						Enviar
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="modal fade" id="modalDetallesExperto" tabindex="-1">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Detalles del Experto</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+				</div>
+				<div class="modal-body" id="detallesExpertoContent">
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="toastContainer" class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;"></div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Pasar proyecto_id al JS global
+    window.PROYECTO_ID = '{{ proyecto.id }}';
+</script>
+<script src="{% static 'investigadores/js/expertos_totales.js' %}"></script>
+{% endblock %}

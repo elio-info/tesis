@@ -1,0 +1,165 @@
+{% extends "expertos/base_expertos.html" %}
+{% load static %}
+
+{% block title %}Completar Encuesta - {{ encuesta.proyecto.nombre }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-section { border-left: 4px solid #0d6efd; padding-left: 15px; margin-bottom: 30px; }
+    .form-check-inline { margin-right: 20px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12 col-lg-8 mx-auto">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">
+                    <i class="fas fa-clipboard-check me-2"></i>Encuesta de Experticidad
+                </h4>
+            </div>
+            <div class="card-body">
+                <div class="mb-4">
+                    <h5>{{ encuesta.proyecto.nombre }}</h5>
+                    <p class="text-muted mb-0">Proyecto de {{ encuesta.proyecto.empresa_cliente }}</p>
+                </div>
+
+                <form id="formEncuesta" 
+				  method="post" 
+				  action="{% url 'app:guardar_encuesta_ajax' experto.id encuesta.id %}"
+				  data-experto-id="{{ experto.id }}">
+                    {% csrf_token %}
+                    
+                    <!-- Datos del experto -->
+                    <div class="form-section">
+                        <h6 class="text-primary mb-3">
+                            <i class="fas fa-user-tie me-2"></i>1. Datos del personal especialista
+                        </h6>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="cargo_actual" class="form-label">Cargo actual *</label>
+                                <input type="text" class="form-control" id="cargo_actual" name="cargo_actual" 
+                                       value="{{ encuesta.cargo_actual }}" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="anos_experiencia" class="form-label">Años de experiencia *</label>
+                                <input type="number" class="form-control" id="anos_experiencia" name="anos_experiencia" 
+                                       value="{{ encuesta.anos_experiencia }}" min="0" required>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Grado científico *</label>
+                            <div>
+								<div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="grado_cientifico" id="tecnico" value="Técnico" 
+                                           {% if encuesta.grado_cientifico == 'Técnico' %}checked{% endif %} required>
+                                    <label class="form-check-label" for="tecnico">Técnico</label>
+                                </div>
+								<div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="grado_cientifico" id="licenciado" value="Licenciado" 
+                                           {% if encuesta.grado_cientifico == 'Licenciado' %}checked{% endif %} required>
+                                    <label class="form-check-label" for="licenciado">Licenciado</label>
+                                </div>
+								<div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="grado_cientifico" id="ingeniero" value="Ingeniero" 
+                                           {% if encuesta.grado_cientifico == 'Ingeniero' %}checked{% endif %} required>
+                                    <label class="form-check-label" for="ingeniero">Ingeniero</label>
+                                </div>
+								<div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="grado_cientifico" id="especialista" value="Especialista" 
+                                           {% if encuesta.grado_cientifico == 'Especialista' %}checked{% endif %} required>
+                                    <label class="form-check-label" for="especialista">Especialista</label>
+                                </div>
+								<div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="grado_cientifico" id="master" value="Master" 
+                                           {% if encuesta.grado_cientifico == 'Master' %}checked{% endif %} required>
+                                    <label class="form-check-label" for="master">Máster</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="grado_cientifico" id="doctor" value="Doctor" 
+                                           {% if encuesta.grado_cientifico == 'Doctor' %}checked{% endif %} required>
+                                    <label class="form-check-label" for="doctor">Doctor</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+					
+					<!-- Conocimiento -->
+                    <div class="form-section">
+                        <h6 class="text-primary mb-3">
+                            <i class="fas fa-graduation-cap me-2"></i>2. Conocimiento de la materia
+                        </h6>
+                        
+                        <div class="mb-3">
+                            <label for="conocimiento_materia" class="form-label">
+                                Marque el valor que se corresponde con el grado de conocimientos que usted posee en la materia presentada. Considere que la escala que le presentamos es ascendente, es decir, el conocimiento sobre el tema referido va creciendo desde 0 hasta 10.
+                            </label>
+                            <div class="d-flex align-items-center gap-3">
+                                <input type="range" class="form-range" id="conocimiento_materia" name="conocimiento_materia" 
+                                       min="0" max="10" value="{{ encuesta.conocimiento_materia|default:5 }}" 
+                                       oninput="this.nextElementSibling.value = this.value" required>
+                                <output class="badge bg-primary fs-6" style="width: 40px;">{{ encuesta.conocimiento_materia|default:5 }}</output>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Influencias -->
+                    <div class="form-section">
+                        <h6 class="text-primary mb-3">
+                            <i class="fas fa-chart-line me-2"></i>3. Influencias en el análisis
+                        </h6>
+                        
+                        {% for campo, label in encuesta_influencias %}
+						<div class="row mb-3 align-items-center">
+							<div class="col-md-6">
+								<label class="form-label">{{ label }}</label>
+							</div>
+							<div class="col-md-6">
+								<div class="btn-group btn-group-sm" role="group">
+									{% for valor, texto in encuesta.INFLUENCIA_CHOICES %}
+									<input type="radio" class="btn-check" name="{{ campo }}" id="{{ campo }}_{{ valor }}" 
+										   value="{{ valor }}" autocomplete="off" {% if forloop.first %}checked{% endif %} required>
+									<label class="btn btn-outline-primary" for="{{ campo }}_{{ valor }}">{{ texto }}</label>
+									{% endfor %}
+								</div>
+							</div>
+						</div>
+						{% endfor %}
+                    </div>
+
+                    <!-- Botones -->
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{% url 'app:dashboard_experto' experto.id %}" 
+						   class="btn btn-secondary">
+							<i class="fas fa-arrow-left me-1"></i> Volver al Dashboard
+						</a>
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="fas fa-check-circle me-2"></i>Enviar Encuesta
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Actualizar badge del range
+    const range = document.getElementById('conocimiento_materia');
+    const badge = range.nextElementSibling;
+    
+    range.addEventListener('input', function() {
+        badge.textContent = this.value;
+    });
+});
+window.EXPERTO_ID = '{{ experto.id }}';
+window.DASHBOARD_URL = "{% url 'app:dashboard_experto' experto.id %}";
+</script>
+<script src="{% static 'expertos/js/completar_encuesta.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,192 @@
+# Entornos virtuales
+# ------------------
+venv/
+env/
+.venv/
+ENV/
+env.bak/
+venv.bak/
+virtualenv/
+pipenv/
+.Python
+*.pyc
+__pycache__/
+__init__.py
+
+# IDE y editores
+# --------------
+# PyCharm
+.idea/
+.idea/*
+*.iml
+*.iws
+*.ipr
+
+# VS Code
+.vscode/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Sublime Text
+*.sublime-workspace
+*.sublime-project
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Archivos del sistema
+# --------------------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Archivos de Python
+# ------------------
+# Byte-compiled / optimized / DLL files
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Archivos de Django
+# ------------------
+# Base de datos SQLite (usa en desarrollo, pero considera ignorar en producci�n)
+*.sqlite3
+*.db
+db.sqlite3
+
+# Archivos de migraci�n (OPCIONAL - generalmente S� se versionan)
+# Descomenta la siguiente l�nea si NO quieres versionar migraciones:
+# */migrations/*.py
+# !*/migrations/__init__.py
+
+# Media files (subidas de usuarios)
+media/
+uploads/
+
+# Archivos est�ticos recolectados (se generan con collectstatic)
+staticfiles/
+static_collected/
+
+# Configuraci�n local/desarrollo
+# ------------------------------
+# Variables de entorno y configuraciones locales
+.env
+.env.local
+.env.dev
+.env.prod
+.env.staging
+.env.test
+.secrets.yml
+config.yml
+config.yaml
+config.json
+local_settings.py
+settings/local.py
+
+# Archivos de logs
+# ----------------
+*.log
+logs/
+log/
+*.logs
+
+# Archivos de testing
+# -------------------
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# Jupyter Notebook
+# ----------------
+.ipynb_checkpoints
+
+# Archivos de sistema operativo
+# -----------------------------
+# Linux
+*~
+
+# Windows
+[Tt]humbs.db
+
+# macOS
+*.DS_Store
+.AppleDouble
+.LSOverride
+
+# Directorios de cache
+# --------------------
+.cache
+nosetests.xml
+coverage.xml
+*,cover
+.hypothesis/
+
+# PyInstaller
+# -----------
+*.manifest
+*.spec
+
+# Instaladores
+# ------------
+*.exe
+*.msi
+
+# Directorios de documentaci�n
+# ----------------------------
+docs/_build/
+
+# Entornos de desarrollo
+# ----------------------
+.vagrant/
+
+# Archivos temporales
+# -------------------
+temp/
+tmp/
+
+# Archivos de pre-commit
+# ----------------------
+.pre-commit-config.yaml
+
+# Archivos de celery
+# ------------------
+celerybeat-schedule
+celerybeat.pid
+
+# Docker
+# ------
+docker-compose.override.yml
+.dockerignore

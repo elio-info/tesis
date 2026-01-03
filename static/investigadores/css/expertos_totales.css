@@ -1,0 +1,73 @@
+.badge.bg-primary {
+    font-size: 0.9em;
+    padding: 0.5em 0.75em;
+}
+
+.table th {
+    border-top: none;
+    font-weight: 600;
+}
+
+.btn-group-sm > .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+#expertosSeleccionados .badge {
+    font-size: 0.85rem;
+}
+
+.btn-eliminar-experto {
+    font-size: 0.7rem;
+    padding: 0.1rem 0.2rem;
+}
+
+.estado-encuesta {
+    font-size: 0.8rem;
+}
+
+#tablaExpertos tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+.experto-seleccionado {
+    background-color: rgba(25, 135, 84, 0.1) !important;
+}
+
+.badge-estado-pendiente {
+    background-color: #6c757d;
+}
+
+.badge-estado-encuesta {
+    background-color: #ffc107;
+    color: #000;
+}
+
+.badge-estado-completado {
+    background-color: #198754;
+}
+
+.modal-experto-detalles .modal-header {
+    background-color: #2c3e50;
+    color: white;
+}
+
+.modal-confirmacion .modal-header {
+    background-color: #198754;
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .table-responsive {
+        font-size: 0.875rem;
+    }
+    
+    .btn-group-sm > .btn {
+        padding: 0.2rem 0.4rem;
+        font-size: 0.8rem;
+    }
+    
+    .badge {
+        font-size: 0.75rem;
+    }
+}

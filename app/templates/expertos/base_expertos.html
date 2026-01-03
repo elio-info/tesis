@@ -1,0 +1,54 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="csrf-token" content="{{ csrf_token }}">
+    <title>{% block title %}Dashboard - Experto{% endblock %}</title>
+    
+    <!-- Bootstrap -->
+    <link href="{% static 'bootstrap/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'bootstrap/fontawesome/css/all.min.css' %}" rel="stylesheet">
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'app:dashboard_experto' experto.id %}">
+                <i class="fas fa-user-graduate me-2"></i>Dashboard Experto
+            </a>
+            
+            <div class="navbar-nav ms-auto">
+                <span class="navbar-text me-3">
+					<i class="fas fa-user me-1"></i>
+					{{ experto.usuario.get_full_name }}
+					<span class="badge bg-light text-dark ms-2">ID: {{ experto.id }}</span>
+				</span>
+                <a href="#" class="btn btn-sm btn-outline-light" onclick="alert('Cerrar sesión - Implementar')">
+                    <i class="fas fa-sign-out-alt me-1"></i> Salir
+                </a>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="main-content mt-5 py-4">
+        <div class="container">
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
+            {% endif %}
+            
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+    
+    <script src="{% static 'bootstrap/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

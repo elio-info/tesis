@@ -1,0 +1,63 @@
+{% extends 'base_investigadores.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>{{ proyecto.nombre }}</h2>
+    <p>{{ proyecto.descripcion }}</p>
+    
+    {% if proyecto.seleccion_completada %}
+        <div class="alert alert-success">
+            ✅ Todas las encuestas han sido completadas
+        </div>
+    {% endif %}
+    
+    <a href="{% url 'crear_seleccion' proyecto.id %}" class="btn btn-primary mb-3">
+        Agregar Todos los Expertos como Candidatos
+    </a>
+    
+    <h4>Expertos Candidatos</h4>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Especialidad</th>
+                <th>Experiencia</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for seleccion in selecciones %}
+            <tr>
+                <td>{{ seleccion.experto.nombre }}</td>
+                <td>{{ seleccion.experto.especialidad }}</td>
+                <td>{{ seleccion.experto.experiencia }} años</td>
+                <td>
+                    <span class="badge 
+                        {% if seleccion.estado == 'completado' %}bg-success
+                        {% elif seleccion.estado == 'rechazado' %}bg-danger
+                        {% else %}bg-warning{% endif %}">
+                        {{ seleccion.get_estado_display }}
+                    </span>
+                </td>
+                <td>
+                    {% if seleccion.estado == 'en_proceso' %}
+                    <a href="{% url 'enviar_encuesta' seleccion.id %}" 
+                       class="btn btn-sm btn-success"
+                       onclick="return confirm('¿Enviar encuesta a este experto?')">
+                        Enviar Encuesta
+                    </a>
+                    {% elif seleccion.estado == 'completado' %}
+                    <span class="text-muted">Encuesta enviada {{ seleccion.fecha_completado|date:"d/m/Y" }}</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center">No hay expertos candidatos</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

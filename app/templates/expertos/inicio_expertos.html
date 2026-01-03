@@ -1,0 +1,225 @@
+{% extends "expertos/base_expertos.html" %}
+{% load static %}
+
+{% block title %}Mis Encuestas - {{ experto.usuario.get_full_name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    hr.separador-secciones {
+		border-top: 2px solid #dee2e6;
+		margin: 3rem 0;
+	}
+
+	.card-encuesta-bloqueada {
+		opacity: 0.8;
+	}
+	
+	.chat-card {
+		transition: transform 0.2s;
+	}
+	.chat-card:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+	}
+
+	.separador-secciones {
+		border-top: 2px solid #dee2e6;
+		margin: 4rem 0;
+	}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- ==================== SECCIÓN DE VOTACIONES PENDIENTES ==================== -->
+{% if chats_cerrados %}
+<div class="row mb-4">
+    {% for votacion in chats_cerrados %}
+	<div class="col-md-6 mb-3">
+		<div class="card h-100 shadow-sm border-warning">
+			<div class="card-body">
+				<div class="d-flex justify-content-between align-items-start mb-2">
+					<!-- ✅ votacion es un DICCIONARIO, no un objeto ListaChequeo -->
+					<h6 class="card-title mb-1">{{ votacion.proyecto.nombre|truncatechars:40 }}</h6>
+					<span class="badge bg-warning text-dark">
+						{{ votacion.cantidad_items }} items
+					</span>
+				</div>
+				
+				<p class="card-text small text-muted mb-2">
+					<i class="fas fa-user-tie me-1"></i>Moderador: {{ votacion.moderador }}
+				</p>
+				
+				<div class="d-flex justify-content-between align-items-center">
+					<small class="text-success">
+						<i class="fas fa-clock me-1"></i>Pendiente de votación
+					</small>
+					<!-- ✅ IMPORTANTE: el experto.id siempre es el logueado -->
+					<a href="{% url 'app:votar_items' votacion.proyecto.id experto.id %}" 
+					   class="btn btn-warning btn-sm">
+						<i class="fas fa-vote-yea me-1"></i>Votar Ahora
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	{% endfor %}
+</div>
+
+<hr class="my-5" style="border-top: 2px solid #dee2e6;">
+{% endif %}
+
+<!-- ==================== MIS CHATS DE PROYECTOS ==================== -->
+{% if chats_disponibles %}
+<div class="row mb-5">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2><i class="fas fa-comments me-2"></i>Mis Tromentas de Ideas</h2>
+            <span class="badge bg-info fs-6">{{ chats_activos|length }} tormentas activos</span>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    {% for chat in chats_disponibles %}
+    <div class="col-md-4 mb-3">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h6 class="card-title">{{ chat.proyecto.nombre|truncatechars:40 }}</h6>                
+                <!-- Botones de acción -->
+                {% if chat.proyecto.estado_tormenta == 'cerrada' %}
+                    <!-- Botón deshabilitado para tormentas cerradas -->
+                    <button class="btn btn-secondary btn-sm w-100" disabled>
+                        <i class="fas fa-ban me-1"></i>No Disponible
+                    </button>
+                {% else %}
+                    <!-- Botones normales para tormentas abiertas -->
+                    {% if chat.es_moderador %}
+                        <a href="{% url 'app:chat_moderador' chat.proyecto.id experto.id %}" 
+                           class="btn btn-warning btn-sm w-100 mt-auto">
+                            <i class="fas fa-crown me-1"></i>Chat Moderador
+                        </a>
+                    {% else %}
+                        <a href="{% url 'app:chat_proyecto' chat.proyecto.id experto.id %}" 
+                           class="btn btn-info btn-sm w-100 mt-auto">
+                            <i class="fas fa-comments me-1"></i>Ir al Chat
+                        </a>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<hr class="my-5" style="border-top: 2px solid #dee2e6;">
+{% endif %}
+
+<!-- ==================== ENCUESTAS PENDIENTES (NO BLOQUEADAS) ==================== -->
+{% if pendientes_no_bloqueadas %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2><i class="fas fa-clipboard-list me-2"></i>Encuestas Pendientes</h2>
+            <span class="badge bg-warning fs-6">{{ pendientes_no_bloqueadas|length }} disponibles</span>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    {% for encuesta in pendientes_no_bloqueadas %}
+	<div class="col-md-6 mb-4">
+        <div class="card h-100 shadow-sm border-warning">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0">{{ encuesta.proyecto.nombre }}</h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text">
+                    <strong>Investigador:</strong> {{ encuesta.proyecto.investigador.usuario.get_full_name }}<br>
+                    <strong>Empresa:</strong> {{ encuesta.proyecto.empresa_cliente }}<br>
+                    <strong>Enviada:</strong> {{ encuesta.fecha_respuesta|date:"d/m/Y H:i" }}
+                </p>
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <span class="badge bg-danger">PENDIENTE</span>
+                    <a href="{% url 'app:completar_encuesta' experto.id encuesta.id %}" class="btn btn-primary btn-sm">
+                        <i class="fas fa-edit me-1"></i>Completar Encuesta
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<hr class="my-5" style="border-top: 2px solid #dee2e6;">
+{% endif %}
+
+<!-- ==================== ENCUESTAS COMPLETADAS ==================== -->
+{% if encuestas_completadas %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2><i class="fas fa-clipboard-list me-2"></i>Encuestas Completadas</h2>
+            <span class="badge bg-success fs-6">{{ encuestas_completadas|length }} completadas</span>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    {% for encuesta in encuestas_completadas %}
+    <div class="col-md-4 mb-3">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h6 class="card-title">{{ encuesta.proyecto.nombre|truncatechars:50 }}</h6>
+                <p class="small text-muted">
+                    Completada: {{ encuesta.fecha_respuesta|date:"d/m/Y" }}<br>
+                    K: {{ encuesta.coeficiente_k }}
+                </p>
+                <span class="badge bg-success"><i class="fas fa-check me-1"></i>COMPLETADA</span>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<hr class="my-5" style="border-top: 2px solid #dee2e6;">
+{% endif %}
+
+<!-- ==================== ENCUESTAS BLOQUEADAS ==================== -->
+{% if pendientes_bloqueadas %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h3><i class="fas fa-lock me-2"></i>Encuestas Bloqueadas</h3>
+        <p class="text-muted">La lista final de expertos ya está cerrada para estos proyectos.</p>
+    </div>
+</div>
+
+<div class="row">
+    {% for encuesta in pendientes_bloqueadas %}
+    <div class="col-md-6 mb-4">
+        <div class="card h-100 shadow-sm border-danger">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0 d-flex justify-content-between align-items-center">
+                    <span>{{ encuesta.proyecto.nombre }}</span>
+                    <i class="fas fa-lock ms-2"></i>
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text">
+                    <strong>Investigador:</strong> {{ encuesta.proyecto.investigador.usuario.get_full_name }}<br>
+                    <strong>Empresa:</strong> {{ encuesta.proyecto.empresa_cliente }}<br>
+                    <strong>Enviada:</strong> {{ encuesta.fecha_respuesta|date:"d/m/Y H:i" }}
+                </p>
+                <div class="alert alert-danger py-2 mb-3">
+                    <small><i class="fas fa-exclamation-triangle me-1"></i>
+                    La lista final de expertos ya está cerrada. No se permite completar esta encuesta.</small>
+                </div>
+                <button class="btn btn-secondary w-100" disabled>
+                    <i class="fas fa-lock me-1"></i> Encuesta Bloqueada
+                </button>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

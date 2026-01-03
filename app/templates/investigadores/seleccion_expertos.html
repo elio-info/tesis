@@ -1,0 +1,169 @@
+{% extends "investigadores/base_investigadores.html" %}
+{% load static %}
+{% load custom_tags %}
+
+{% block title %}Selección de Expertos - {{ proyecto.nombre }}{% endblock %}
+
+{% block extra_css %}
+<link href="{% static 'investigadores/css/seleccion_expertos.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Meta CSRF para AJAX -->
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    
+    <!-- Toast Container -->
+    <div id="toastContainer" class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;"></div>
+
+    <!-- Header del Proyecto -->
+    <div class="card lista-chequeo-card mb-4">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-8">
+                    <h5 class="card-title">Proyecto: {{ proyecto.nombre }}</h5>
+                    <p class="card-text text-muted">
+                        <strong>Responsable:</strong> {{ proyecto.investigador.usuario.get_full_name|default:"Responsable no asignado" }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Título y Botón de Asignar Moderador -->
+    <div class="row mb-4 align-items-center">		
+        <div class="col-md-8">
+            <h2><i class="fas fa-poll me-2"></i>Selección de Expertos</h2>
+        </div>
+    </div>
+
+    <!-- Tabla de Expertos -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Expertos en Proceso</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0" id="tablaEncuesta">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Experto</th>
+                                    <th>K</th>
+                                    <th>Cargo</th>
+                                    <th>Años Exp.</th>
+                                    <th>Grado</th>
+                                    <th>Moderador</th>
+                                    <th>Estado</th>
+									<th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for encuesta in encuestas %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ encuesta.experto.usuario.get_full_name }}</strong>
+                                    </td>
+                                    <td>
+                                        <span class="badge {% if encuesta.experto.indice_experticidad and encuesta.experto.indice_experticidad >= 0.8 %}bg-success{% elif encuesta.experto.indice_experticidad %}bg-warning{% else %}bg-secondary{% endif %}">
+                                            {{ encuesta.experto.coeficiente_experticidad|default:"N/A" }}
+                                        </span>
+                                    </td>
+                                    <td>{{ encuesta.experto.cargo_actual|default:"No especificado" }}</td>
+                                    <td>
+                                        <span class="badge bg-dark">{{ encuesta.experto.anos_experiencia|default:"N/A" }} años</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info">{{ encuesta.experto.get_grado_cientifico_display }}</span>
+                                    </td>
+                                    <td>
+                                        <div class="form-check d-flex justify-content-center">
+											<input class="form-check-input" 
+												   type="radio" 
+												   name="moderador_id" 
+												   value="{{ encuesta.experto.id }}"
+												   data-experto-id="{{ encuesta.experto.id }}"
+												   {% if encuesta.estado != 'completada' %}disabled{% endif %}
+												   {% if encuesta.experto.id == moderador_actual_id %}checked{% endif %}>
+										</div>
+                                    </td>
+                                    <td>
+                                        {% if encuesta.estado == 'pendiente' %}
+                                        <span class="badge bg-warning">
+                                            <i class="fas fa-clock me-1"></i>Pendiente
+                                        </span>
+                                        {% elif encuesta.estado == 'completada' %}
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-check me-1"></i>Completada
+                                        </span>
+                                        <br>
+                                        <small class="text-muted">K: {{ encuesta.coeficiente_k }}</small>
+                                        {% endif %}
+                                    </td>
+									<td>
+										<button class="btn btn-sm btn-danger btn-eliminar-experto" 
+												data-encuesta-id="{{ encuesta.id }}"
+												data-experto-nombre="{{ encuesta.experto.usuario.get_full_name }}">
+											<i class="fas fa-trash me-1"></i> Eliminar
+										</button>
+									</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="9" class="text-center py-4">
+                                        <i class="fas fa-clipboard-list fa-2x text-muted mb-2"></i>
+                                        <p class="text-muted">No hay expertos en proceso de encuesta</p>
+                                        <a href="{% url 'app:seleccion_expertos' proyecto.id %}" class="btn btn-primary">
+                                            <i class="fas fa-user-plus me-1"></i> Seleccionar Expertos
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botón Finalizar Proceso -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <a href="{% url 'app:seleccion_expertos' proyecto.id %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-1"></i> Volver a Selección
+                    </a>
+                </div>
+                <div>
+                    {% if proceso_finalizado %}
+                    <button class="btn btn-secondary me-2" disabled>
+                        <i class="fas fa-lock me-1"></i> Proceso Finalizado
+                    </button>
+                    <a href="{% url 'app:lista_chequeo' proyecto.id %}" class="btn btn-success">
+                        <i class="fas fa-list-check me-1"></i> Ver Lista Final
+                    </a>
+                    {% elif total_completadas > 0 %}
+                    <button class="btn btn-success" id="btnFinalizarProceso">
+                        <i class="fas fa-clipboard-check me-1"></i> Finalizar Proceso
+                    </button>
+                    {% else %}
+                    <button class="btn btn-secondary" disabled>
+                        <i class="fas fa-clock me-1"></i> Esperando Encuestas...
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    window.PROYECTO_ID = '{{ proyecto.id }}';
+</script>
+<script src="{% static 'investigadores/js/seleccion_expertos.js' %}"></script>
+{% endblock %}
